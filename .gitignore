@@ -1,0 +1,31 @@
+@"
+# Build artifacts
+build/
+cmake-build-*/
+*.pdb
+*.obj
+*.lib
+*.exe
+*.ilk
+
+# Backups (not meant for the public repo)
+model_backup/
+model_backup_tiny_lama/
+Latest_backup/
+
+# Model weights and tokenizer files - large binaries, don't belong in git
+# (** matches any depth, so this catches files inside model_data/src/, tinyllama_src/, etc too)
+**/*.bin
+**/*.gguf
+**/*.pt
+**/*.safetensors
+tinyllama_src/
+
+# IDE
+.idea/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+"@ | Set-Content -Encoding UTF8 .gitignore
