@@ -260,9 +260,11 @@ int main() {
 #endif
 
     try {
-        std::string weights_path = "C:/Users/DrSulxX/CLionProjects/SovereignKernel/model_data/stories110M.bin";
-        std::string tokenizer_path = "C:/Users/DrSulxX/CLionProjects/SovereignKernel/model_data/tinyllama_tokenizer.bin";
-        std::string prompt_path = "C:/Users/DrSulxX/CLionProjects/SovereignKernel/model_data/system_prompt.txt";
+        // Relative to the project root (run the built executable from there,
+        // or adjust these paths to wherever you've placed your own weights).
+        std::string weights_path = "model_data/stories110M.bin";
+        std::string tokenizer_path = "model_data/tinyllama_tokenizer.bin";
+        std::string prompt_path = "model_data/system_prompt.txt";
 
         TransformerCheckpointHeader hdr = peek_model_header(weights_path);
         ModelConfig config;
