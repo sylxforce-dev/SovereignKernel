@@ -36,6 +36,15 @@ This is a personal learning project on one specific machine, not a packaged rele
 
 None of this is conceptually hard — it's just genuinely not abstracted away yet, because there's been no second machine to test any of it against. Treat this as source you compile for your own setup, not a binary you run as-is.
 
+### Tuning for your own CPU (exact locations)
+
+The CPU performance numbers below are specific to a Ryzen 7 7700 (8 physical cores, AVX2, single-channel DDR5). If you're running on different hardware, these are the exact places to change:
+
+- **Thread count** — `omp_set_num_threads(8);` appears in `main()` in both `src/real_runner.cpp` (line ~247) and `src/real_runner2.cpp` (line ~339). Change `8` to your CPU's **physical** core count (check with Task Manager → Performance → CPU → "Cores", not "Logical processors" — using the logical/SMT count is usually slower here, not faster, per the `OMP_WAIT_POLICY` finding below).
+- **AVX2 compile flags** — `CMakeLists.txt`, in the `model_runner` and `model_runner2` target blocks: `target_compile_options(... /arch:AVX2)` (MSVC) or `-mavx2 -mfma` (GCC/Clang). If your CPU is AVX2-capable (basically anything from the last decade, Intel Haswell/AMD Excavator or newer), leave these as-is — this is what's giving you the SIMD speedup. If you hit an illegal-instruction crash, your CPU doesn't support AVX2 and you'll need to remove these flags (falls back to the scalar path already present in `tensor_math_cpu.h` / `tensor_math_quantized.h`).
+- **Don't set `OMP_WAIT_POLICY=active`** as an environment variable — it was tested on this hardware and made things measurably *worse* (busy-spin threads compete with the matmul for scarce memory bandwidth on single-channel RAM). If you have dual/quad-channel RAM this tradeoff may differ, but it wasn't re-tested there.
+- There's no runtime CPU-feature auto-detection anywhere in the codebase — every one of the above is a manual, compile-time decision you make for your own machine.
+
 ### What's actually implemented (CPU path)
 
 - **Tokenizer**: real byte-level BPE (character-level init + iterative adjacent-pair merging by vocab score) — not a greedy longest-match approximation.
