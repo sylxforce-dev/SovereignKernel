@@ -352,8 +352,10 @@ int main() {
 #endif
 
     try {
-        std::string gguf_path = "C:/Users/DrSulxX/CLionProjects/SovereignKernel/model_data/tinyllama-1.1b-chat-v1.0.Q4_0.gguf";
-        std::string tokenizer_path = "C:/Users/DrSulxX/CLionProjects/SovereignKernel/model_data/tinyllama_tokenizer.bin";
+        // Relative to the project root (run the built executable from there,
+        // or adjust these paths to wherever you've placed your own weights).
+        std::string gguf_path = "model_data/tinyllama-1.1b-chat-v1.0.Q4_0.gguf";
+        std::string tokenizer_path = "model_data/tinyllama_tokenizer.bin";
         std::string config_path = "runtime_config.txt";
 
         std::cout << "Loading GGUF model from: " << gguf_path << "\n";
