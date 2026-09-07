@@ -16,7 +16,9 @@ SovereignKernel implements the full inference path for transformer language mode
 
 The goal is a minimal but correct Tensor Engine with both CPU and CUDA backends.
 
-**Target hardware:** RTX 5060 Ti (8GB VRAM), Ryzen 7 7700, 16GB RAM (single-channel).
+**Reference hardware:** RTX 5060 Ti (8GB VRAM), Ryzen 7 7700, 16GB RAM (single-channel).
+
+The reference system is used for development and benchmarking. The CUDA backend is architecture-targeted at build time rather than being hardcoded to the RTX 5060 Ti.
 
 ## ⚠️ Important Execution Warning
 If you are planning to compile, configure, or run this repository, you must read this first:  
