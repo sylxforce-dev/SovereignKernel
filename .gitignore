@@ -1,4 +1,3 @@
-@"
 # Build artifacts
 build/
 cmake-build-*/
@@ -12,6 +11,22 @@ cmake-build-*/
 model_backup/
 model_backup_tiny_lama/
 Latest_backup/
+Latest_tensor_backup3/
+cpu_cuda_compined_tests/
+backup2/
+backup_cuda/
+src_cuda_tests_backup/
+tensor_cuda_backup/
+
+# CUDA test scratch files - only real_runner* and runtime_config* should go up
+src_cuda/*_test.cu
+src_cuda/step0_smoketest.cu
+src_cuda_tensor/step*.cu
+
+# Internal notes and dev tools - not for public repo
+SovereignKernel Bug Hunt.md
+tools/
+docs/
 
 # Model weights and tokenizer files - large binaries, don't belong in git
 # (** matches any depth, so this catches files inside model_data/src/, tinyllama_src/, etc too)
@@ -28,4 +43,3 @@ tinyllama_src/
 # OS
 .DS_Store
 Thumbs.db
-"@ | Set-Content -Encoding UTF8 .gitignore

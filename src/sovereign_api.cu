@@ -1,6 +1,6 @@
 #include "tensor.h"
 #include "tensor_math_cpu.h"
-#include "tensor_math_cuda.cuh"
+//#include "tensor_math_cuda.cuh"
 #include "tensor_math_generation.h"
 
 #include <iostream>

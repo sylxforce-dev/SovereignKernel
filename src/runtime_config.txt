@@ -1,6 +1,6 @@
-temperature = 0.1
+temperature = 0.7
 top_p = 0.9
-rep_penalty = 1.15
+rep_penalty = 1.18
 min_tokens = 50
-max_tokens = 100
+max_tokens = 300
 penalty_window = 64

@@ -321,7 +321,7 @@ int main() {
 
             auto gen_start = std::chrono::high_resolution_clock::now();
 
-            int max_tokens = 100;
+            int max_tokens = 1000;
             for (int step = 0; step < max_tokens; ++step) {
                 int next_token = sample_token(logits.data(), config.vocab_size, 0.8f, 0.9f, rng);
 
