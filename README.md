@@ -18,6 +18,11 @@ The goal is a minimal but correct Tensor Engine with both CPU and CUDA backends.
 
 **Target hardware:** RTX 5060 Ti (8GB VRAM), Ryzen 7 7700, 16GB RAM (single-channel).
 
+## ⚠️ Important Execution Warning
+If you are planning to compile, configure, or run this repository, you must read this first:  
+👉 **[MUST READ BEFORE ATTEMPTING](MUST_READ_BEFORE_ATTEMPTING.md)**  
+*(Covers hardcoded absolute paths, strict model support for TinyLlama/Karpathy, and AVX2/OpenMP core constraints).*
+
 ## Models
 
 Two models are used for development and testing:
@@ -39,34 +44,16 @@ Two models are used for development and testing:
 
 The state, metrics, and evolution of the engine are maintained in dedicated runtime diaries.
 
-This repository relies on three core documents to explain its execution paths and development:
+This repository relies on core documents to explain its execution paths and development:
 
 ### [CUDA Runners Comparison](docs/CUDA_RUNNERS.md)
-
-Structural breakdown of the three active GPU inference entry points:
-
-- Pure CUDA
-- WMMA V1 — "Gold Standard"
-- Experimental Speculative path
+Structural breakdown of the three active GPU inference entry points (Pure CUDA, WMMA V1 — "Gold Standard", and the experimental Speculative path).
 
 ### [Runtime Diary & Architecture Audit v1.7](docs/Sovereign_Kernel_Runtime_Diary_v1_7.md)
-
-The definitive record of the engine's current capabilities.
-
-Covers:
-
-- Tensor Core / WMMA execution states
-- Batched prefill latency (~75ms)
-- Stable N=1 decode metrics (~240–260 tok/s)
-- Decode vs. Prefill execution strategies
-- Runtime architecture and current execution model
+The definitive record of the engine's current capabilities (Tensor Core / WMMA execution states, batched prefill latency ~75ms, stable N=1 decode metrics ~240–260 tok/s).
 
 ### [CUDA Optimization Diary](docs/SovereignKernel_CUDA_Optimization_Diary.md)
-
-Historical record of Phase 1.
-
-Tracks the step-by-step optimization of the pure CUDA-core scalar implementation from **53 tok/s to its physical limit of ~151 tok/s**, before the Tensor Core architecture was introduced.
+Historical record of Phase 1 (step-by-step optimization of the pure CUDA-core scalar implementation from 53 tok/s to ~151 tok/s).
 
 ---
-
 *Status: Phase 2 (Runtime Baseline) SEALED. Phase 3 (Agentic Orchestration & Retrieval) OPEN.*
