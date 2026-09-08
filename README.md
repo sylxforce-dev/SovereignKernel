@@ -21,8 +21,9 @@ The goal is a minimal but correct Tensor Engine with both CPU and CUDA backends.
 The reference system is used for development and benchmarking. The CUDA backend is architecture-targeted at build time rather than being hardcoded to the RTX 5060 Ti.
 
 ## ⚠️ Important Execution Warning
-If you are planning to compile, configure, or run this repository, you must read this first:  
-👉 **[MUST READ BEFORE ATTEMPTING](MUST_READ_BEFORE_ATTEMPTING.md)**  
+
+If you are planning to compile, configure, or run this repository, you must read this first:
+👉 **[MUST READ BEFORE ATTEMPTING](MUST_READ_BEFORE_ATTEMPTING.md)**
 *(Covers hardcoded absolute paths, strict model support for TinyLlama/Karpathy, and AVX2/OpenMP core constraints).*
 
 ## Models
@@ -44,18 +45,16 @@ Two models are used for development and testing:
 
 ## Architecture & Documentation Hub
 
-The state, metrics, and evolution of the engine are maintained in dedicated runtime diaries.
+The state, metrics, and evolution of the engine are maintained in dedicated runtime diaries. **Read them in this order** — each builds on context from the one before it:
 
-This repository relies on core documents to explain its execution paths and development:
+### 1. [CUDA Optimization Diary](docs/SovereignKernel_CUDA_Optimization_Diary.md)
+Historical record of Phase 1: the step-by-step optimization of the pure scalar-CUDA implementation, from an initial 53 tok/s up to a **151.48 tok/s** milestone that was, at the time, treated as the practical ceiling for standard CUDA cores. This is a point-in-time log of that phase — the 151 tok/s figure was later exceeded (see below) once Tensor Core work began; it's kept here unedited as the historical record of how Phase 1 actually happened, negative results included.
 
-### [CUDA Runners Comparison](docs/CUDA_RUNNERS.md)
-Structural breakdown of the three active GPU inference entry points (Pure CUDA, WMMA V1 — "Gold Standard", and the experimental Speculative path).
+### 2. [Runtime Diary & Architecture Audit v1.7](docs/Sovereign_Kernel_Runtime_Diary_v1_7.md)
+The definitive record of the engine's **current** capabilities: pure CUDA execution has since exceeded 200 tok/s, the Tensor/Hybrid Decode path reached a validated 226.969 tok/s milestone and now sits in a stable **240–260 tok/s** steady-state class, and fused WMMA prefill has reached ~75.7ms on a representative prompt. This document supersedes the throughput ceiling implied by the Optimization Diary above — read it for where the engine actually stands today.
 
-### [Runtime Diary & Architecture Audit v1.7](docs/Sovereign_Kernel_Runtime_Diary_v1_7.md)
-The definitive record of the engine's current capabilities (Tensor Core / WMMA execution states, batched prefill latency ~75ms, stable N=1 decode metrics ~240–260 tok/s).
-
-### [CUDA Optimization Diary](docs/SovereignKernel_CUDA_Optimization_Diary.md)
-Historical record of Phase 1 (step-by-step optimization of the pure CUDA-core scalar implementation from 53 tok/s to ~151 tok/s).
+### 3. [CUDA Runners Comparison](docs/CUDA_RUNNERS.md)
+A structural, code-level breakdown of the three active GPU inference entry points (Pure CUDA baseline, WMMA V1 "Gold Standard", and the actively-iterated speculative-decoding variant), with current measured throughput for each. Reading this last makes the most sense — the per-runner comparison here draws on the history and current state established in the two diaries above.
 
 ---
 *Status: Phase 2 (Runtime Baseline) SEALED. Phase 3 (Agentic Orchestration & Retrieval) OPEN.*
