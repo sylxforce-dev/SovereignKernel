@@ -66,7 +66,7 @@ This is not a replacement for the file above — it's a parallel experiment laye
 
 **f) Telemetry reports `spec_hits`** — the final performance line includes a "Speculative Free Tokens" count, i.e. how many tokens were generated "for free" via an accepted draft match rather than a full sequential decode step.
 
-**Status: work in progress.** Code comments in this file are marked `// [T4 EXPERIMENT]` and `// --- TAASTATUD: ... ---` ("RESTORED: ..."), indicating pieces of functionality (prefill-latency timing, the 20-token telemetry window, the final report) were rebuilt after being lost or broken at some point — this file has not settled the way `_wmma.cu` has. Whether n-gram speculative decoding gives a real net speedup depends heavily on how repetitive the output is — code and structured text will hit drafts far more often than free-form conversational text, so the win is workload-dependent and hasn't been benchmarked yet.
+**Status: actively iterated on.** Code comments in this file are marked `// [T4 EXPERIMENT]` and `// --- TAASTATUD: ... ---` ("RESTORED: ..."), indicating pieces of functionality (prefill-latency timing, the 20-token telemetry window, the final report) were rebuilt after being lost or broken earlier in development — an early version of this batched-speculative approach regressed sharply (down to ~90 tok/s) before the current implementation. The current build measures around ~220 tok/s, closer to the `_wmma.cu` gold-standard range (240–260 tok/s) than the early regression. Whether n-gram speculative decoding gives a real net speedup depends heavily on how repetitive the output is — code and structured text will hit drafts far more often than free-form conversational text — so the win is workload-dependent, and the current ~220 tok/s figure is not yet confirmed across repeated runs.
 
 ---
 
@@ -79,4 +79,5 @@ This is not a replacement for the file above — it's a parallel experiment laye
 | RMSNorm | FLOAT4 | PTX `st.cg` L2-locked | FLOAT4 (not yet ported to PTX-locked) |
 | QKV projection | Separate GEMVs | Fused WMMA GEMM | Separate WMMA GEMVs |
 | Speculative decoding | No | No | Yes (self-speculative, n-gram draft) |
-| Status | Baseline, stable | Stable ("gold standard") | Experimental, actively changing |
+| Measured throughput | ~203 tok/s (pure CUDA, exceeded the earlier ~151 tok/s Phase 1 figure) | 240–260 tok/s | ~220 tok/s (not yet confirmed across repeated runs) |
+| Status | Baseline, stable | Stable ("gold standard") | Actively iterated on |
