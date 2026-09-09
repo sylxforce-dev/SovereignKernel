@@ -4,25 +4,46 @@ SovereignKernel has three GPU inference entry points. They are not three version
 
 ---
 
-## 1. `real_runner_gguf_cuda.cu` — Pure CUDA baseline
+# 1. `real_runner_gguf_cuda.cu` — Pure CUDA baseline
 
-**Location:** `src_cuda/real_runner_gguf_cuda.cu`
-**Layer:** Pure CUDA (no tensor cores)
+**Location:** `src_cuda/real_runner_gguf_cuda.cu`  
+**Layer:** Pure CUDA (no Tensor Cores, no CUDA Graphs)
 
-This is the straightforward GPU forward pass: GGUF/Q4_0 weights loaded directly into VRAM, standard scalar/vectorized CUDA kernels, no CUDA Graphs, no speculative decoding. Each generated token issues its own sequence of kernel launches from the host, one token at a time.
+This is the original GPU inference implementation and the baseline for the CUDA execution path: GGUF/Q4_0 weights are loaded directly into VRAM and inference is performed using custom CUDA kernels, with one token processed at a time.
+
+The original implementation was built **without CUDA Graphs**. CUDA Graphs were integrated later as a separate optimization stage on top of the working Pure CUDA execution path. This baseline therefore represents the direct host-driven CUDA implementation before graph-based launch optimization.
 
 **What's in it:**
 
-- **FLOAT4-vectorized RMSNorm** (`rmsnorm_kernel_float4`) and a fused **Add+RMSNorm** kernel (`add_and_rmsnorm_kernel_float4`) — both read/write in `float4` (16-byte) chunks instead of scalar floats, cutting memory transaction count by 4x for the norm passes.
-- **FlashAttention-lite with online softmax** (`mha_kv_cache_kernel`) — one block per attention head, each thread scans a slice of the KV cache and maintains a running max/sum (the online-softmax trick from FlashAttention) instead of materializing the full score row before normalizing. Grouped-query attention is handled directly (`heads_per_kv_group` maps each query head to its shared KV head).
-- **RoPE + KV cache write fused into one kernel** (`rope_and_cache_k_kernel`, referenced in the truncated middle section) — rotates K in-place and writes it straight into the per-layer KV cache slot in the same launch.
-- **Q4_0 GEMV** for all linear layers (`tensor_math_quantized_cuda::launch_gemv_q4_0`), including a fused **W1+W3+SwiGLU** kernel for the FFN up-projection (`launch_gemv_q4_0_w1_w3_swiglu`) — computes both FFN branches and applies SiLU-gating in one launch instead of three separate kernel calls.
-- **No CUDA Graphs.** `forward_pass_gguf_cuda()` is called directly from the host generation loop on every step — the kernel launch sequence is re-issued from scratch each token, with the usual host-side launch overhead this implies.
-- **Runtime config reload every turn** — `load_runtime_config()` and `load_system_prompt()` are called fresh on every user input, so temperature/top-p/system prompt can be edited between messages without restarting.
+- **FLOAT4-vectorized RMSNorm** (`rmsnorm_kernel_float4`) and a fused **Add+RMSNorm** kernel (`add_and_rmsnorm_kernel_float4`) — both operate on `float4` (16-byte) chunks rather than scalar floats, reducing the number of element-level memory operations in the norm passes.
+- **FlashAttention-lite with online softmax** (`mha_kv_cache_kernel`) — one CUDA block is assigned to each attention head. Threads process portions of the KV cache while maintaining running maximum and normalization values, avoiding a separate full score-normalization pass. Grouped-query attention is handled directly through `heads_per_kv_group`.
+- **RoPE + KV-cache write** (`rope_and_cache_k_kernel`) — rotates the key vectors and writes the resulting values directly into the appropriate per-layer KV-cache position.
+- **Q4_0 GEMV** for the linear layers through `tensor_math_quantized_cuda::launch_gemv_q4_0`, including the fused **W1+W3+SwiGLU** FFN path through `launch_gemv_q4_0_w1_w3_swiglu`.
+- **No CUDA Graphs in the original baseline.** `forward_pass_gguf_cuda()` is invoked directly from the host generation loop for every token, and the required CUDA kernel sequence is launched again for each step.
+- **No Tensor Cores.** This runner uses the custom CUDA/Q4 execution path rather than the later WMMA/Tensor Core prefill path.
+- **Runtime config reload every turn** — `load_runtime_config()` and `load_system_prompt()` are called for each user input, allowing runtime parameters and the system prompt to be changed without restarting the process.
 
-**Sampling:** temperature + top-p (nucleus) with repetition penalty, same `sample_token()` logic reused across all three runners.
+### CUDA Graph evolution
 
-**Role:** this is the correctness/performance baseline for the CUDA path — the thing the CUDA Graphs and WMMA runners are measured against.
+CUDA Graphs were introduced **after this Pure CUDA implementation was already functional**. They were not part of the original baseline architecture; they were added later to reduce repeated host-side kernel-launch overhead during decode.
+
+The evolution was therefore:
+
+```text
+Pure CUDA baseline
+        ↓
+Custom CUDA kernel optimization
+        ↓
+CUDA Graph integration
+        ↓
+WMMA / Tensor Core prefill path
+```
+
+The Pure CUDA runner remains useful as the reference point for evaluating the effect of subsequent execution and kernel optimizations.
+
+**Sampling:** temperature + top-p (nucleus sampling) with repetition penalty, using the shared `sample_token()` logic.
+
+**Role:** original correctness/performance baseline for the GPU inference path. Later CUDA Graph and WMMA/Tensor Core implementations build on the concepts established here, while targeting different execution optimizations.
 
 ---
 
