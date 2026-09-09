@@ -96,9 +96,9 @@ This is not a replacement for the file above — it's a parallel experiment laye
 | | `real_runner_gguf_cuda` | `real_runner_gguf_wmma` | `real_runner_gguf_wmma_v2` |
 |---|---|---|---|
 | Layer | Pure CUDA | WMMA tensor cores | WMMA tensor cores |
-| Decode strategy | Per-token host launches | CUDA Graphs (N=1) | Batched speculative + CUDA Graphs fallback |
-| RMSNorm | FLOAT4 | PTX `st.cg` L2-locked | FLOAT4 (not yet ported to PTX-locked) |
+| Decode strategy | Pure CUDA → CUDA Graphs (N=1) | CUDA Graphs (N=1) | Batched speculative + CUDA Graphs fallback |
+| RMSNorm | FLOAT4 | PTX `st.cg` cache-global stores | FLOAT4 (not yet ported to PTX-locked) |
 | QKV projection | Separate GEMVs | Fused WMMA GEMM | Separate WMMA GEMVs |
 | Speculative decoding | No | No | Yes (self-speculative, n-gram draft) |
-| Measured throughput | ~203 tok/s (pure CUDA, exceeded the earlier ~151 tok/s Phase 1 figure) | 240–260 tok/s | ~220 tok/s (not yet confirmed across repeated runs) |
-| Status | Baseline, stable | Stable ("gold standard") | Actively iterated on |
+| Measured throughput | ~200 tok/s (current CUDA Graph implementation) | 240–260 tok/s | ~220 tok/s (not yet confirmed across repeated runs) |
+| Status | Current CUDA runner, stable | Stable ("gold standard") | Actively iterated |
