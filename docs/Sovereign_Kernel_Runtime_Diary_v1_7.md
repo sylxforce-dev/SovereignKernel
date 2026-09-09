@@ -10,7 +10,7 @@ The central architectural principle is that **N=1 decode and large-token prefill
 - Large-token prefill exposes enough parallelism to make fused GEMM/WMMA execution substantially more effective.
 The runtime therefore maintains separate execution strategies for Decode and Prefill rather than forcing both workloads through the same computational path.
 
-Source availability: The runtime source code is not publicly released yet. This diary documents the architecture, measurements, experiments, and validation work; the implementation itself will be published separately.
+Source availability: The runtime source code is now publicly available in the repository. This diary documents the architecture, measurements, experiments, validation work, and development history alongside the implementation.
  
 ---
  
