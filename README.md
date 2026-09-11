@@ -43,20 +43,16 @@ Two models are used for development and testing:
   - Smaller model used for fast iteration and sanity checks
 ## Architecture & Documentation Hub
  
-The state, metrics, and evolution of the engine are maintained in dedicated runtime diaries.
- 
-### Start here: [Runtime Engineering Diary](docs/SovereignKernel_Runtime_Engineering_Diary.md)
- 
-This is the current, actively-maintained journal — the full story from the first CPU-only prototype through the CUDA rewrite, the WMMA/Tensor Core correctness work, a full isolated cuBLAS experiment, the sampling/coherence investigation, and the ongoing decode-optimization series (V6.3 → V6.4 → V6.5), including every rejected experiment along the way. It reflects where the engine actually stands **today**: a validated **~324 tok/s average decode** (**340 tok/s** best observed window) on the reference hardware, with an open, actively-profiled question about sequence-length-dependent GPU cost. If you only read one document, read this one.
- 
-### Background / historical record, read in this order if you want the full derivation:
+The state, metrics, and evolution of the engine are maintained in dedicated runtime diaries. Read them in this order — each one picks up where the last left off:
  
 1. [CUDA Optimization Diary](docs/SovereignKernel_CUDA_Optimization_Diary.md)
-   Historical record of Phase 1: the step-by-step optimization of the pure scalar-CUDA implementation, from an initial 53 tok/s up to a 151.48 tok/s milestone that was, at the time, treated as the practical ceiling for standard CUDA cores. This is a point-in-time log of that phase — the 151 tok/s figure was later exceeded by a wide margin (see the Runtime Engineering Diary above) once Tensor Core work began; it's kept here unedited as the historical record of how Phase 1 actually happened, negative results included.
+   Historical record of Phase 1: the step-by-step optimization of the pure scalar-CUDA implementation, from an initial 53 tok/s up to a 151.48 tok/s milestone that was, at the time, treated as the practical ceiling for standard CUDA cores. This is a point-in-time log of that phase — the 151 tok/s figure was later exceeded by a wide margin once Tensor Core work began; it's kept here unedited as the historical record of how Phase 1 actually happened, negative results included.
 2. [Runtime Diary & Architecture Audit v1.7](docs/Sovereign_Kernel_Runtime_Diary_v1_7.md)
-   An intermediate snapshot: pure CUDA execution had exceeded 200 tok/s, the Tensor/Hybrid Decode path had reached a validated 226.969 tok/s milestone and was sitting in a 240–260 tok/s steady-state class, and fused WMMA prefill had reached ~75.7ms on a representative prompt. Superseded by the Runtime Engineering Diary above, kept as a record of that stage.
+   An intermediate snapshot: pure CUDA execution had exceeded 200 tok/s, the Tensor/Hybrid Decode path had reached a validated 226.969 tok/s milestone and was sitting in a 240–260 tok/s steady-state class, and fused WMMA prefill had reached ~75.7ms on a representative prompt.
 3. [CUDA Runners Comparison](docs/CUDA_RUNNERS.md)
-   A structural, code-level breakdown of the three original GPU inference entry points (Pure CUDA baseline, WMMA V1 "Gold Standard", and the speculative-decoding variant), with throughput for each as measured at that stage. Useful for understanding the pure-CUDA / WMMA-prefill / decode split at the file level before diving into the current engineering diary above.
+   A structural, code-level breakdown of the GPU inference entry points (Pure CUDA baseline, WMMA V1 "Gold Standard", the retired speculative-decoding variant, and the current V4 production decode path), with what changed and why at the file level.
+4. [Runtime Engineering Diary](docs/SovereignKernel_Runtime_Engineering_Diary.md)
+   The current, actively-maintained journal — continues directly from the three documents above, covering the CPU-to-CUDA rewrite, the WMMA/Tensor Core correctness work, a full isolated cuBLAS experiment, the sampling/coherence investigation, and the ongoing decode-optimization series (V6.3 → V6.4 → V6.5), including every rejected experiment along the way. This is where the engine actually stands **today**: a validated ~324 tok/s average decode (340 tok/s best observed window), with an open, actively-profiled question about sequence-length-dependent GPU cost. Its own opening section gives the current status up front, before the full chronological derivation below it.
 ---
 *Status: decode path in active profiling (Nsight Compute) to isolate a sequence-length-dependent GPU cost. Current validated baseline: ~324 tok/s average, 340 tok/s best window.*
  
