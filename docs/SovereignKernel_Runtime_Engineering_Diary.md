@@ -1,5 +1,8 @@
 # SovereignKernel
 
+> **⚠️ Development status:** The latest runtime code is not yet published.  
+> The performance figures and engineering notes in this repository may describe a newer internal build than the currently published source.
+
 A custom C++/CUDA LLM inference runtime built from scratch as a learning project.
 
 The goal was simple:
@@ -9,8 +12,6 @@ The goal was simple:
 SovereignKernel started as a hobby experiment and gradually turned into a complete local inference runtime with its own tokenizer, GGUF loader, CPU path, CUDA kernels, KV cache, attention implementation and GPU execution pipeline.
 
 This document records the engineering process rather than pretending the final implementation appeared fully formed.
-
----
 
 # Runtime Engineering Diary
 
