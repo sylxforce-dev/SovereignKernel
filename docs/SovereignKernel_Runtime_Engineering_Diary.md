@@ -3,13 +3,13 @@
 > **⚠️ Development status:** The latest runtime code is not yet published.  
 > The performance figures and engineering notes in this repository may describe a newer internal build than the currently published source.
 
-A custom C++/CUDA LLM inference runtime built from scratch as a learning project.
+A custom C++/CUDA LLM inference runtime built from scratch as an experimental engineering project.
 
 The goal was simple:
 
 > **Understand what actually happens inside LLM inference instead of treating the runtime as a black box.**
 
-SovereignKernel started as a hobby experiment and gradually turned into a complete local inference runtime with its own tokenizer, GGUF loader, CPU path, CUDA kernels, KV cache, attention implementation and GPU execution pipeline.
+SovereignKernel started as an **experimental engineering project** and evolved into a complete local inference runtime with its own tokenizer, GGUF loader, CPU path, CUDA kernels, KV cache, attention implementation and GPU execution pipeline.
 
 This document records the engineering process rather than pretending the final implementation appeared fully formed.
 
