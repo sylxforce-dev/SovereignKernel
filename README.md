@@ -1,8 +1,16 @@
-# SovereignKernel
- 
 A custom C++/CUDA LLM inference runtime, built from scratch as a learning project.
  
 This is **not** an attempt to compete with llama.cpp. It exists to answer one question: *what does it actually take to run a transformer, end-to-end, on your own hardware, with code you wrote and understand line by line?*
+ 
+## The short version
+ 
+TinyLlama-1.1B is the model used throughout this project — but it isn't the point. It's the test subject.
+ 
+The actual goal was to prove a *method*: given an unfamiliar, low-level performance problem, can it be measured, understood, and fixed systematically — instead of guessed at? Every optimization here follows the same repeatable cycle: measure the baseline, form a hypothesis, change exactly one thing, benchmark it against the previous known-good version, and keep the change only if it actually helped. Failed attempts are kept in the record too, not hidden.
+ 
+The model got roughly 6x faster over the course of this project (53 → ~324 tok/s average decode). That number is a side effect. The real result is a documented, repeatable process for finding and fixing performance problems in an unfamiliar system — one that isn't specific to TinyLlama, CUDA, or even LLM inference.
+ 
+The [Runtime Engineering Diary](docs/SovereignKernel_Runtime_Engineering_Diary.md) is the fastest way to see that process in action, including everything that didn't work.
  
 ## Why
  
