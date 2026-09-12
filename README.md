@@ -12,7 +12,7 @@ The actual goal was to prove a *method*: given an unfamiliar, low-level performa
  
 The model got roughly 6x faster over the course of this project (53 → ~324 tok/s average decode). That number is a side effect. The real result is a documented, repeatable process for finding and fixing performance problems in an unfamiliar system — one that isn't specific to TinyLlama, CUDA, or even LLM inference.
  
-
+**Not technical, or short on time?** Read the [plain-language version of this story](docs/SovereignKernel_Simple_Story.md) instead — same journey, no jargon. The full technical record is linked further down, in reading order.
  
 ## Why
  
@@ -65,4 +65,111 @@ The state, metrics, and evolution of the engine are maintained in dedicated runt
    The current, actively-maintained journal — continues directly from the three documents above, covering the CPU-to-CUDA rewrite, the WMMA/Tensor Core correctness work, a full isolated cuBLAS experiment, the sampling/coherence investigation, and the ongoing decode-optimization series (V6.3 → V6.4 → V6.5), including every rejected experiment along the way. This is where the engine actually stands **today**: a validated ~324 tok/s average decode (340 tok/s best observed window), with an open, actively-profiled question about sequence-length-dependent GPU cost. Its own opening section gives the current status up front, before the full chronological derivation below it.
 ---
 *Status: decode path in active profiling (Nsight Compute) to isolate a sequence-length-dependent GPU cost. Current validated baseline: ~324 tok/s average, 340 tok/s best window.*
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
  
