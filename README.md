@@ -12,7 +12,7 @@ The actual goal was to prove a *method*: given an unfamiliar, low-level performa
  
 The model got roughly 6x faster over the course of this project (53 → ~324 tok/s average decode). That number is a side effect. The real result is a documented, repeatable process for finding and fixing performance problems in an unfamiliar system — one that isn't specific to TinyLlama, CUDA, or even LLM inference.
  
-The [Runtime Engineering Diary](docs/SovereignKernel_Runtime_Engineering_Diary.md) is the fastest way to see that process in action, including everything that didn't work.
+
  
 ## Why
  
