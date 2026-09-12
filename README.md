@@ -1,3 +1,5 @@
+# SovereignKernel
+ 
 A custom C++/CUDA LLM inference runtime, built from scratch as a learning project.
  
 This is **not** an attempt to compete with llama.cpp. It exists to answer one question: *what does it actually take to run a transformer, end-to-end, on your own hardware, with code you wrote and understand line by line?*
