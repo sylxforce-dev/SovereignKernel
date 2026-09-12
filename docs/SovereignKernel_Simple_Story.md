@@ -44,7 +44,7 @@ This sounds obvious, but it's surprisingly rare in practice. Most people either 
 - Comfort working at a very low level (down to individual instructions the hardware executes), when most engineers work several layers above that.
 - A disciplined, evidence-based approach — not chasing a big number, but understanding *why* the number changed.
 - Honesty about failure: multiple approaches here didn't work, and that's recorded rather than hidden.
-- The specific model used (TinyLlama) was a means to an end, not the goal — the method demonstrated here isn't tied to this one model, this one piece of hardware, or even this one domain.
+- The specific model used (TinyLlama) was a means to an end, not the goal — the method demonstrated here isn't tied to this one model, this one piece of hardware, or even this one domain. The same measure-first approach shows up in other projects across a very different stack — a deterministic validation layer built around LLM-generated code, a local multi-agent routing system, and an empirical benchmark of vector-quantization fidelity — because the actual skill isn't "GPU optimization," it's finding where a bottleneck or a weak assumption actually lives in an unfamiliar system, whatever layer that turns out to be.
 If you're reading this while evaluating a candidate: the useful signal isn't "he made a chatbot faster." It's that, faced with an unfamiliar low-level system, the approach was systematic rather than trial-and-error, and every step — including the ones that failed — is written down and checkable, not just claimed.
  
 ## Where to go next
